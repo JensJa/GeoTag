@@ -35,6 +35,7 @@
             rb_google = new RadioButton();
             rb_osm = new RadioButton();
             textBox1 = new TextBox();
+            button1 = new Button();
             gb_mapProvider.SuspendLayout();
             SuspendLayout();
             // 
@@ -103,11 +104,22 @@
             textBox1.Size = new Size(684, 23);
             textBox1.TabIndex = 4;
             // 
+            // button1
+            // 
+            button1.Location = new Point(1032, 33);
+            button1.Name = "button1";
+            button1.Size = new Size(137, 40);
+            button1.TabIndex = 5;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1226, 859);
+            Controls.Add(button1);
             Controls.Add(textBox1);
             Controls.Add(gb_mapProvider);
             Controls.Add(tb_longitude);
@@ -130,5 +142,6 @@
         private RadioButton rb_google;
         private RadioButton rb_osm;
         private TextBox textBox1;
+        private Button button1;
     }
 }

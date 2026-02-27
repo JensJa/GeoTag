@@ -13,15 +13,14 @@ namespace GeoTag
         public mapCtrl()
         {
             InitializeComponent();
-            acturl = getUrl(activeMapProvider, latitude.ToString().Replace(',', '.'), longitude.ToString().Replace(',', '.'),19,true);
+
             initBrowser();
-            Task.Delay(500).Wait();
-            navigateToUrl();
+
         }
 
         private void UserControl1_Load(object sender, EventArgs e)
         {
-
+            
         }
 
 
@@ -56,19 +55,25 @@ namespace GeoTag
 
         {
             await initialized();
-
+            navigateToUrl();
         }
 
         public void navigateToUrl()
         {
-            string url = getUrl(activeMapProvider, latitude.ToString().Replace(',', '.'), longitude.ToString().Replace(',', '.'), 19);
-            //webView21.;
+            acturl = getUrl(activeMapProvider, latitude.ToString().Replace(',', '.'), longitude.ToString().Replace(',', '.'), 19, true);
+
+            Task.Delay(500);
+            
+            webView21.CoreWebView2.Navigate(acturl);
         }
 
-
-        //// The event. Note that by using the generic EventHandler<T> event type
-        //// we do not need to declare a separate delegate type.
-        public event EventHandler<GeoTagEventArgument> CoordinateChange;
+        //public event EventHandler<DataEventArgs>? DataProcessed; 
+        //protected virtual void OnDataProcessed(string msg) 
+        //{ DataProcessed?.Invoke(this, new DataEventArgs(msg)); }
+        
+        ////// The event. Note that by using the generic EventHandler<T> event type
+        ////// we do not need to declare a separate delegate type.
+        public event EventHandler<GeoTagEventArgument>? CoordinateChange;
 
         public void OnCoordinateChange(GeoTagEventArgument e)
         {
@@ -117,7 +122,7 @@ namespace GeoTag
                 longitude = 0;
             }
 
-            CoordinateChange(this, new GeoTagEventArgument(latitude, longitude, acturl));
+          //  CoordinateChange(this, new GeoTagEventArgument(latitude, longitude, acturl));
         }
 
 
@@ -127,9 +132,9 @@ namespace GeoTag
             switch (provider)
             {
                 case MapProvider.GoogleMaps:
-                    return getGoogleMapsUrl(latitude, longitude, zoom);
+                    return getGoogleMapsUrl(latitude, longitude, zoom,baseurl);
                 case MapProvider.OpenStreetMap:
-                    return getOsmUrl(latitude, longitude, zoom);
+                    return getOsmUrl(latitude, longitude, zoom,baseurl);
                 default:
                     return "";
             }
@@ -158,5 +163,7 @@ namespace GeoTag
             string url = $"https://www.openstreetmap.org/#map={zoom}/{latitude}/{longitude}";
             return url;
         }
+    
+ 
     }
 }
