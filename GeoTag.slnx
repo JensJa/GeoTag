@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="GeoTag/GeoTag.csproj" />
+  <Project Path="GeoTagDemo/GeoTagDemo.csproj" />
+</Solution>
