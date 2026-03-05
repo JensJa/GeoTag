@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 
 namespace GeoTag
 {
@@ -36,7 +37,7 @@ namespace GeoTag
         public bool ShowSymbol { get; set; } = true;
 
         [Browsable(true), DefaultValue(true), Description("Show the tag symbol"), Category("GPS"), DisplayName("show symbol")]
-        public MapProvider activeMapProvider { get; set; } = MapProvider.OpenStreetMap;
+        public MapProvider MapProvider { get; set; } = MapProvider.OpenStreetMap;
 
         [Browsable(true), DefaultValue(0), Description("get Latitude"), Category("GPS"), DisplayName("get the longitude")]
         public double latitude { get; set; } = 0;
@@ -56,35 +57,33 @@ namespace GeoTag
         {
             await initialized();
             navigateToUrl();
+
+           
         }
 
         public void navigateToUrl()
         {
-            acturl = getUrl(activeMapProvider, latitude.ToString().Replace(',', '.'), longitude.ToString().Replace(',', '.'), 19, true);
-
-            Task.Delay(500);
-            
+            acturl = getUrl(MapProvider, latitude.ToString().Replace(',', '.'), longitude.ToString().Replace(',', '.'), 19, latitude == 0 && longitude == 0);
+                                  
             webView21.CoreWebView2.Navigate(acturl);
+            Thread.Sleep(1000);
+            showIcon();
         }
 
+        #region events
         //public event EventHandler<DataEventArgs>? DataProcessed; 
         //protected virtual void OnDataProcessed(string msg) 
         //{ DataProcessed?.Invoke(this, new DataEventArgs(msg)); }
-        
+
         ////// The event. Note that by using the generic EventHandler<T> event type
         ////// we do not need to declare a separate delegate type.
         public event EventHandler<GeoTagEventArgument>? CoordinateChange;
 
-        public void OnCoordinateChange(GeoTagEventArgument e)
-        {
-            // e = new GeoTagEventArgument(latitude,longitude, acturl);
-
-            // Call the base class event invocation method.
-            // base.OnShapeChanged(e);
-        }
+       
 
         private void webView21_SourceChanged(object sender, Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs e)
         {
+            Debug.WriteLine("Source changed: " + webView21.Source.ToString());
             string[] parameters;
             acturl = webView21.Source.ToString();
 
@@ -102,8 +101,8 @@ namespace GeoTag
                 {
                     parameters = urls[urls.Length - 1].Split(",");
                 }
-                latitude = Double.Parse(parameters[0]);
-                longitude = Double.Parse(parameters[1]);
+                latitude = Double.Parse(parameters[0].Replace("@","").Replace('.', ','));
+                longitude = Double.Parse(parameters[1].Replace('.', ','));
             }
 
             else if (acturl.ToLower().StartsWith("https://www.openstreetmap.org"))
@@ -122,10 +121,13 @@ namespace GeoTag
                 longitude = 0;
             }
 
-          //  CoordinateChange(this, new GeoTagEventArgument(latitude, longitude, acturl));
+            CoordinateChange(this, new GeoTagEventArgument(latitude, longitude, acturl));
         }
 
+        #endregion region
 
+
+        #region viewmap 
         public string getUrl(MapProvider provider, string latitude, string longitude, int zoom = 19, bool baseurl = false)
         {
 
@@ -163,7 +165,118 @@ namespace GeoTag
             string url = $"https://www.openstreetmap.org/#map={zoom}/{latitude}/{longitude}";
             return url;
         }
-    
- 
+
+        #endregion
+
+        #region Icon Draw
+
+
+        public void  showIcon()
+        { 
+         switch (MapProvider)
+            {
+                case MapProvider.GoogleMaps:
+                    drawIconGoogleMaps();
+                    break;
+                case MapProvider.OpenStreetMap:
+                    drawIconOSM();
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        public async Task drawIconGoogleMaps()
+        {
+            using (var ms = new MemoryStream())
+            {
+                Resource1.location.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                string base64Image = Convert.ToBase64String(ms.ToArray());
+
+                string script = $@"
+(function() {{
+
+    // Overlay erzeugen
+    var overlay = document.getElementById('myOverlay');
+    if (!overlay) {{
+        overlay = document.createElement('div');
+        overlay.id = 'myOverlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.pointerEvents = 'none'; // wichtig!
+        overlay.style.zIndex = '999999999';   // höher als alles von Google
+        document.body.appendChild(overlay);
+    }}
+
+    // Icon erzeugen
+    var old = document.getElementById('geoTagIcon');
+    if (old) old.remove();
+
+    var img = document.createElement('img');
+    img.src = 'data:image/png;base64,{base64Image}';
+    img.id = 'geoTagIcon';
+
+    img.style.position = 'absolute';
+    img.style.top = '50%';
+    img.style.left = '50%';
+    img.style.width = '40px';
+    img.style.height = '58px';
+    img.style.transform = 'translate(-50%, -100%)';
+    img.style.zIndex = '1000000000';
+
+    overlay.appendChild(img);
+
+
+
+}})();
+
+";
+
+                await webView21.CoreWebView2.ExecuteScriptAsync(script);
+            }
+        }
+        /// <summary>
+        /// /////////////////////////////////////////
+        /// </summary>
+        /// <returns></returns>
+
+        public async Task drawIconOSM()
+        {
+            using (var ms = new MemoryStream())
+            {
+                Resource1.location.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                string base64Image = Convert.ToBase64String(ms.ToArray());
+                string top = "" + webView21.Height / 2;
+                string left = "" + webView21.Width / 2;
+                string script = $@"
+(function() {{
+    var mapDiv = document.getElementById('map');
+    var img = document.createElement('img');
+    img.src = 'data:image/png;base64,{base64Image}';
+    img.id = 'geoTagIcon';
+
+    img.style.position = 'absolute';
+    img.style.width = '40px';
+    img.style.height = '58px';
+    img.style.zIndex = '9999';
+
+    // Mittelpunkt des map-Divs
+    img.style.top = 'calc(50% - 29px)';   // 58px Höhe / 2
+    img.style.left = 'calc(50% - 20px)';  // 40px Breite / 2
+   img.style.transform = 'translate(-50%, -100%)';
+    mapDiv.appendChild(img);
+}})();
+";
+                await webView21.CoreWebView2.ExecuteScriptAsync(script);
+            }
+        }
+
+        #endregion
+
     }
+
 }
