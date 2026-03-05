@@ -34,21 +34,23 @@
             gb_mapProvider = new GroupBox();
             rb_google = new RadioButton();
             rb_osm = new RadioButton();
-            textBox1 = new TextBox();
+            tb_url = new TextBox();
             button1 = new Button();
+            button2 = new Button();
             gb_mapProvider.SuspendLayout();
             SuspendLayout();
             // 
             // mapCtrl1
             // 
-            mapCtrl1.activeMapProvider = GeoTag.MapProvider.OpenStreetMap;
             mapCtrl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            mapCtrl1.latitude = 0D;
+            mapCtrl1.latitude = 51.33D;
             mapCtrl1.Location = new Point(130, 145);
-            mapCtrl1.longitude = 0D;
+            mapCtrl1.longitude = 10.45D;
+            mapCtrl1.MapProvider = GeoTag.MapProvider.OpenStreetMap;
             mapCtrl1.Name = "mapCtrl1";
             mapCtrl1.Size = new Size(909, 642);
             mapCtrl1.TabIndex = 0;
+            mapCtrl1.CoordinateChange += mapCtrl1_CoordinateChange;
             // 
             // tb_latitude
             // 
@@ -84,6 +86,7 @@
             rb_google.TabIndex = 1;
             rb_google.Text = "GoogleMaps";
             rb_google.UseVisualStyleBackColor = true;
+            rb_google.CheckedChanged += rb_google_CheckedChanged;
             // 
             // rb_osm
             // 
@@ -96,13 +99,14 @@
             rb_osm.TabStop = true;
             rb_osm.Text = "OpenStreetmap";
             rb_osm.UseVisualStyleBackColor = true;
+            rb_osm.CheckedChanged += rb_osm_CheckedChanged;
             // 
-            // textBox1
+            // tb_url
             // 
-            textBox1.Location = new Point(130, 83);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(684, 23);
-            textBox1.TabIndex = 4;
+            tb_url.Location = new Point(130, 83);
+            tb_url.Name = "tb_url";
+            tb_url.Size = new Size(684, 23);
+            tb_url.TabIndex = 4;
             // 
             // button1
             // 
@@ -114,13 +118,24 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // button2
+            // 
+            button2.Location = new Point(1032, 79);
+            button2.Name = "button2";
+            button2.Size = new Size(137, 40);
+            button2.TabIndex = 6;
+            button2.Text = "button2";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1226, 859);
+            Controls.Add(button2);
             Controls.Add(button1);
-            Controls.Add(textBox1);
+            Controls.Add(tb_url);
             Controls.Add(gb_mapProvider);
             Controls.Add(tb_longitude);
             Controls.Add(tb_latitude);
@@ -141,7 +156,8 @@
         private GroupBox gb_mapProvider;
         private RadioButton rb_google;
         private RadioButton rb_osm;
-        private TextBox textBox1;
+        private TextBox tb_url;
         private Button button1;
+        private Button button2;
     }
 }
