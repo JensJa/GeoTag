@@ -25,9 +25,6 @@ namespace GeoTag
         }
 
 
-
-
-
         #region Properties
 
         [Browsable(true), DefaultValue("https://www.openstreetmap.org"), Description("URL displayed now"), Category("GPS"), DisplayName("act URL")]

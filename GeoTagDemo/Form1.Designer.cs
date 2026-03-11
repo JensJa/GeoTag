@@ -37,18 +37,20 @@
             tb_url = new TextBox();
             button1 = new Button();
             button2 = new Button();
+            button3 = new Button();
+            lb_tags = new ListBox();
             gb_mapProvider.SuspendLayout();
             SuspendLayout();
             // 
             // mapCtrl1
             // 
             mapCtrl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            mapCtrl1.latitude = 51.33D;
-            mapCtrl1.Location = new Point(130, 145);
+            mapCtrl1.latitude = 51.330001D;
+            mapCtrl1.Location = new Point(25, 127);
             mapCtrl1.longitude = 10.45D;
             mapCtrl1.MapProvider = GeoTag.MapProvider.OpenStreetMap;
             mapCtrl1.Name = "mapCtrl1";
-            mapCtrl1.Size = new Size(909, 642);
+            mapCtrl1.Size = new Size(909, 712);
             mapCtrl1.TabIndex = 0;
             mapCtrl1.CoordinateChange += mapCtrl1_CoordinateChange;
             // 
@@ -128,11 +130,31 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
+            // button3
+            // 
+            button3.Location = new Point(1062, 157);
+            button3.Name = "button3";
+            button3.Size = new Size(63, 29);
+            button3.TabIndex = 7;
+            button3.Text = "button3";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
+            // 
+            // lb_tags
+            // 
+            lb_tags.FormattingEnabled = true;
+            lb_tags.Location = new Point(947, 200);
+            lb_tags.Name = "lb_tags";
+            lb_tags.Size = new Size(259, 634);
+            lb_tags.TabIndex = 8;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1226, 859);
+            Controls.Add(lb_tags);
+            Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(button1);
             Controls.Add(tb_url);
@@ -159,5 +181,7 @@
         private TextBox tb_url;
         private Button button1;
         private Button button2;
+        private Button button3;
+        private ListBox lb_tags;
     }
 }

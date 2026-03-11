@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="ExifEdit/ExifEdit.csproj" Id="1f31b300-2ee2-4ddb-ab35-239f0d63ca1f" />
+  <Project Path="ExifEditDemo/ExifEditDemo.csproj" Id="f4637a52-6284-4974-8eb2-318767459ba1" />
   <Project Path="GeoTag/GeoTag.csproj" />
   <Project Path="GeoTagDemo/GeoTagDemo.csproj" />
 </Solution>
