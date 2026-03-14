@@ -38,7 +38,6 @@
             button1 = new Button();
             button2 = new Button();
             button3 = new Button();
-            lb_tags = new ListBox();
             gb_mapProvider.SuspendLayout();
             SuspendLayout();
             // 
@@ -140,20 +139,11 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
-            // lb_tags
-            // 
-            lb_tags.FormattingEnabled = true;
-            lb_tags.Location = new Point(947, 200);
-            lb_tags.Name = "lb_tags";
-            lb_tags.Size = new Size(259, 634);
-            lb_tags.TabIndex = 8;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1226, 859);
-            Controls.Add(lb_tags);
             Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(button1);
@@ -182,6 +172,5 @@
         private Button button1;
         private Button button2;
         private Button button3;
-        private ListBox lb_tags;
     }
 }

@@ -1,104 +1,65 @@
-﻿using ExifEdit.Exif;
-
-
+using ExifEdit.Exif;
+using ExifEdit.Segments;
+using ExifEdit.Segments;
 using ExifEdit.Tags;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ExifEdit.Segments;
-using ExifEdit.Segments;
+using System.Xml.Linq;
 
 namespace ExifEdit.Images
 {
     internal class JpgParser
     {
-
+        private static readonly ILog log = LogManager.GetLogger(typeof(SpecialTags));
         public Dictionary<uint, ExifEntrie> ExifEntryList { get; set; }
         public Dictionary<IptcTag, List<IPTCField>> IptcList { get; set; }
 
-        public IPTCSeg IptcSeg { get; set; }
-        public SeperatorJpg SeperatorJpg { get; set; }
-     
-    
-        public void parsefile(String filename, String provider, bool cache)
+        public IPTCSeg IptcSeg { get; set; } //ToDo private machen und über SaveTagsAndWrite2File übergeben, damit die Struktur auch bei nicht vorhandener IPTC Sektion angelegt wird
+        public JpegSplitter jpegSplitter { get; set; } //todo private machen und über SaveTagsAndWrite2File übergeben, damit die Struktur auch bei nicht vorhandener IPTC Sektion angelegt wird
+
+        ExifParser exifParser;
+
+        /// <summary>
+        /// call the Splitter fpr the JPEG File in to Segments and call the ExifParser for the Exif Segment and the IPTCSeg for the IPTC Segment, if they are available. The results are stored in the ExifEntryList and IptcList
+        /// </summary>
+        /// <param name="filename"></param>
+        public void Parsefile(byte[] b)
         {
-            byte[] b;
-             ExifEntryList = new Dictionary<uint, ExifEntrie>();
-
-            using (var stream = File.Open(filename, FileMode.Open))
-            {
-                using (var reader = new BinaryReader(stream))
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        stream.CopyTo(ms);
-                        b= ms.ToArray();
-                    }
-                }
-            }
-
             
-            //byte[] b = File.ReadAllBytes(filename);
-
-        
+            ExifEntryList = new Dictionary<uint, ExifEntrie>();
             IptcList = new Dictionary<IptcTag, List<IPTCField>>();
 
-            SeperatorJpg = new SeperatorJpg(b);
-            SeperatorJpg.createSegemnts();
+            jpegSplitter = new JpegSplitter(b);
+            jpegSplitter.ReadSegemnts();
 
-            //  segListe = jpgsep.ListeJpegSegments;
-            byte[] bx;
-    
-
-            //for (int i = 0; i < SeperatorJpg.ListeJpegSegments.Count; i++)
-            //{
-            //    bx = SeperatorJpg.ListeJpegSegments[i];
-            //    ushort seg = Helper.Convert2.toInt(bx[0], bx[1]);
-            //    //  listBox1.Items.Add("" + i + ": " + seperatorJpg.getSegmentTyp(seg));
-
-            //}
-
-            if (SeperatorJpg.app1 != 255)
+            if (jpegSplitter.app1 != 255)
             {
                 //            parseExif = new ParamterParser(filename);
                 ExifParser exifParser = new ExifParser();
-                ExifEntryList = exifParser.analyse(SeperatorJpg.ListeJpegSegments[SeperatorJpg.app1]);
-                foreach (ExifEntrie ef in ExifEntryList.Values)
-                {
-                    //lb_exif.Items.Add($"{ef.tagtyp.ToString()} : {ef.value}");
+                ExifEntryList = exifParser.analyse(jpegSplitter.ListeJpegSegments[jpegSplitter.app1]);
 
-                    //listBox1.Items.Add($"({ef.ifdTyp}:{ef.id:X4}) {ef.tagtyp.ToString()} : {ef.value} as {ef.typ.ToString()} {ef.dataCount} ");
-
-                    // Console.WriteLine($"({ef.ifdTyp}:{ef.id:X4}) {ef.tagtyp.ToString()} as {ef.typ.ToString()} : {ef.value} ");
-                }
-               
             }
 
-            if (SeperatorJpg.app13 != 255)
+            if (jpegSplitter.app13 != 255)
             {
-                IptcSeg = new IPTCSeg(SeperatorJpg.ListeJpegSegments[SeperatorJpg.app13]);
+                IptcSeg = new IPTCSeg(jpegSplitter.ListeJpegSegments[jpegSplitter.app13]);
                 IptcSeg.parse();
                 IptcList = IptcSeg.IptcList;
-              
-
-                //IptcTag[] tags = IptcSeg.getTagsList();
-                //for (uint i = 0; i < tags.Length; i++)
-                //{
-                //  //  listBox1.Items.Add(IptcTags.getDescription((IptcTag)tags[i]) + " " + IptcSeg.getElement(tags[i]));
-                //}
-
             }
 
-           
+        }
 
-            //ResolveGPS(tsw_permananetGps.Checked);
-            //fillControlDaten();
-            //fillControlIPTC();
-            //fillControlIPTCList();
+        public void SaveTagsAndWrite2File(String Filename, Dictionary<uint, ExifEntrie> exifEntryList, Dictionary<IptcTag, List<IPTCField>> iptcList)
+        {
+            log.Debug("+saveTagsAndWrite2File");
+            
 
+            log.Debug("-saveTagsAndWrite2File");
         }
 
     }

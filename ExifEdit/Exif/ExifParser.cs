@@ -1,7 +1,8 @@
-﻿
+
 
 using ExifEdit.Helper;
 using ExifReader.Exif;
+using System.Collections;
 
 
 namespace ExifEdit.Exif
@@ -11,6 +12,8 @@ namespace ExifEdit.Exif
     class ExifParser
     {
 
+
+      public Dictionary<NullReferenceException, byte[]> IfdListe { get; private set; } = new Dictionary<NullReferenceException, byte[]>(); // for saving the binary IFD Data
 
         Dictionary<uint, ExifEntrie> exifList;
         byte[] b;
@@ -51,6 +54,8 @@ namespace ExifEdit.Exif
 
          const int  offset = 10; //die ersten 10 Bytes gehören nicht zu den EXIF daten, sondern zu 
 
+   
+
         private void analyseData()
         {
             // TreeNode treeNode;
@@ -61,7 +66,7 @@ namespace ExifEdit.Exif
 
             while (ifdPos != 0)
             { 
-                ifdPos = analyseIfd(ifdPos+ offset, ifdNr == 0? IfdTyp.IFD0: IfdTyp.EXTIFD,ifdNr);
+                ifdPos = analyseIfd(ifdPos+ offset, ifdNr == 0? IfdTyp.IFD0: IfdTyp.IFDTHUMB,ifdNr);
                 ifdNr++;
             }
             foreach (Tuple<uint, IfdTyp> elm in additionalIfd)
@@ -136,7 +141,7 @@ namespace ExifEdit.Exif
 
             if ( tagType == TagType.TAG_GPSInfo)
             {
-                additionalIfd.Add(new Tuple<uint, IfdTyp>(Convert2.toInt(isIntel, b[pos + 8], b[pos + 9], b[pos + 10], b[pos + 11]), IfdTyp.GPSIFD));
+                additionalIfd.Add(new Tuple<uint, IfdTyp>(Convert2.toInt(isIntel, b[pos + 8], b[pos + 9], b[pos + 10], b[pos + 11]), IfdTyp.IFDGPS));
             }
             else if (tagType == TagType.TAG_ExifOffset)
             {

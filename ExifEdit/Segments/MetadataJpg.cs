@@ -68,13 +68,13 @@ namespace ExifEdit.Segments
 
 
 
-            //createSegemnts();
+            //ReadSegemnts();
 
             ////  segListe = jpgsep.ListeJpegSegments;
             //byte[] bx;
 
-            //SeperatorJpg seperatorJpg = new SeperatorJpg(b);
-            //seperatorJpg.createSegemnts();
+            //JpegSplitter seperatorJpg = new JpegSplitter(b);
+            //seperatorJpg.ReadSegemnts();
             //for (int i = 0; i < seperatorJpg.ListeJpegSegments.Count; i++)
             //{
             //    bx = seperatorJpg.ListeJpegSegments[i];

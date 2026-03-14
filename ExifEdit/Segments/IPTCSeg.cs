@@ -46,25 +46,25 @@ namespace ExifEdit.Segments
         public IPTCSeg()
         {
 
-            IptcList = new Dictionary<IptcTag, List<IPTCField>>();
-            kennung = 0xFFED;  //APP13 = 0xFFED
-            Datenkennung = new byte[] { 0x50, 0x68, 0x6F, 0x74,  0x6f, 0x73, 0x68,0x6f,0x70, 0x20, 0x33, 0x2e, 0x30,0x00 };
-            DataDescriptor = new byte[] { 0x38, 0x42, 0x49, 0x4d };  //8BIM
-            TypeFiled = 0x0404;
-            localEncoding = Encoding.Default; // use as default
+            //IptcList = new Dictionary<IptcTag, List<IPTCField>>();
+            //kennung = 0xFFED;  //APP13 = 0xFFED
+            //Datenkennung = new byte[] { 0x50, 0x68, 0x6F, 0x74,  0x6f, 0x73, 0x68,0x6f,0x70, 0x20, 0x33, 0x2e, 0x30,0x00 };
+            //DataDescriptor = new byte[] { 0x38, 0x42, 0x49, 0x4d };  //8BIM
+            //TypeFiled = 0x0404;
+            //localEncoding = Encoding.Default; // use as default
 
-            //Add the first 2 Segments
-            //Encoding
-             byte[] dataEncoding = { 0x01b, 0x25, 0x47 };
-             List<IPTCField> list2 = new List<IPTCField>();
-             list2.Add(new IPTCField(delimiterDefault, (ushort) IptcTag.CODED_CHARACTER_SET, 3, dataEncoding, Encoding.ASCII));
-             IptcList.Add(IptcTag.CODED_CHARACTER_SET, list2);
+            ////Add the first 2 Segments
+            ////Encoding
+            // byte[] dataEncoding = { 0x01b, 0x25, 0x47 };
+            // List<IPTCField> list2 = new List<IPTCField>();
+            // list2.Add(new IPTCField(delimiterDefault, (ushort) IptcTag.CODED_CHARACTER_SET, 3, dataEncoding, Encoding.ASCII));
+            // IptcList.Add(IptcTag.CODED_CHARACTER_SET, list2);
             
-            //Recorded Version
-            byte[] dataRecordedVersion = { 0x01b, 0x04 };
-            List<IPTCField> list3 = new List<IPTCField>();
-            list3.Add(new IPTCField(delimiterDefault, (ushort)IptcTag.ENVELOPE_RECORD_VERSION, 2, dataRecordedVersion, Encoding.ASCII));
-            IptcList.Add(IptcTag.ENVELOPE_RECORD_VERSION, list3);
+            ////Recorded Version
+            //byte[] dataRecordedVersion = { 0x01b, 0x04 };
+            //List<IPTCField> list3 = new List<IPTCField>();
+            //list3.Add(new IPTCField(delimiterDefault, (ushort)IptcTag.ENVELOPE_RECORD_VERSION, 2, dataRecordedVersion, Encoding.ASCII));
+            //IptcList.Add(IptcTag.ENVELOPE_RECORD_VERSION, list3);
 
             //
         }
@@ -123,7 +123,7 @@ namespace ExifEdit.Segments
                 if (IptcList.ContainsKey(iTag) )
                 {
                     List<IPTCField> list2 = IptcList[iTag];
-                    list2.Add(new IPTCField(delimiter, iTag, Size, data, localEncoding));
+                    list2.Add(new IPTCField( delimiter, iTag, Size, data, localEncoding));
                     IptcList.Remove(iTag);
                     IptcList.Add(iTag, list2);
                 }

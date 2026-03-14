@@ -1,4 +1,4 @@
-﻿using ExifEdit.Helper;
+using ExifEdit.Helper;
 using ExifReader.Exif;
 using System;
 
@@ -6,7 +6,7 @@ using System;
 namespace ExifEdit.Exif
 {
     class TagConvert
-    {
+    { 
         public static String getValue(bool isIntel, TagType tag, DataType dataType, byte[] data, uint count, IfdTyp ifdTyp)
         {
             Tuple<String, object[]> dataValue = null;
@@ -17,7 +17,7 @@ namespace ExifEdit.Exif
             String s = dataValue.Item1;
 
             String s1 = SpecialTags.GetValueByTag(tag, o, ifdTyp);
-            return s1 != null ? s1 : s;
+            return s1 != null ? s1 + " ["+s +"]" : s;
         }
 
         /// <summary>

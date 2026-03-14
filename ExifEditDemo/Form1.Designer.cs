@@ -30,11 +30,13 @@
         {
             tb_filename = new TextBox();
             but_work = new Button();
-            lb_data = new ListBox();
+            lb_exifdata = new ListBox();
+            lb_S = new ListBox();
             SuspendLayout();
             // 
             // tb_filename
             // 
+            tb_filename.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             tb_filename.Location = new Point(47, 24);
             tb_filename.Name = "tb_filename";
             tb_filename.Size = new Size(1133, 23);
@@ -48,22 +50,32 @@
             but_work.TabIndex = 1;
             but_work.Text = "Worrk";
             but_work.UseVisualStyleBackColor = true;
+            but_work.Click += but_work_Click;
             // 
-            // lb_data
+            // lb_exifdata
             // 
-            lb_data.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lb_data.FormattingEnabled = true;
-            lb_data.Location = new Point(34, 128);
-            lb_data.Name = "lb_data";
-            lb_data.Size = new Size(668, 544);
-            lb_data.TabIndex = 2;
+            lb_exifdata.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lb_exifdata.FormattingEnabled = true;
+            lb_exifdata.Location = new Point(406, 128);
+            lb_exifdata.Name = "lb_exifdata";
+            lb_exifdata.Size = new Size(773, 544);
+            lb_exifdata.TabIndex = 2;
+            // 
+            // lb_S
+            // 
+            lb_S.FormattingEnabled = true;
+            lb_S.Location = new Point(25, 130);
+            lb_S.Name = "lb_S";
+            lb_S.Size = new Size(362, 529);
+            lb_S.TabIndex = 3;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1241, 695);
-            Controls.Add(lb_data);
+            ClientSize = new Size(1191, 695);
+            Controls.Add(lb_S);
+            Controls.Add(lb_exifdata);
             Controls.Add(but_work);
             Controls.Add(tb_filename);
             Name = "Form1";
@@ -79,6 +91,7 @@
 
         private TextBox tb_filename;
         private Button but_work;
-        private ListBox lb_data;
+        private ListBox lb_exifdata;
+        private ListBox lb_S;
     }
 }

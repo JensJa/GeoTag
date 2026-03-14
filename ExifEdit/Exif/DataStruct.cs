@@ -1,4 +1,4 @@
-﻿using ExifReader.Exif;
+using ExifReader.Exif;
 using System;
 
 

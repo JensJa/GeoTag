@@ -13,6 +13,15 @@
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="3.3.0" />
+    <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\!Daten\!!jj\!cs\GeoTag\ExifEdit\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\!Daten\!!jj\!cs\GeoTag\ExifEdit\.editorconfig" />
   </ItemGroup>
 
 </Project>

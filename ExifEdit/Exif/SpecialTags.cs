@@ -57,7 +57,7 @@ namespace ExifEdit.Exif
 
             try
             {
-                if (ifdtyp == IfdTyp.GPSIFD)
+                if (ifdtyp == IfdTyp.IFDGPS)
                 {
                     TagTypeGPS tagTypeGPS = (TagTypeGPS)tagType;
                     switch (tagTypeGPS)

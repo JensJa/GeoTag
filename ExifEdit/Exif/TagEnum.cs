@@ -27,13 +27,9 @@ namespace ExifReader.Exif
     public enum IfdTyp : uint
     {
         IFD0 = 0x1_0000,
-        // IFD1 = 1,_0
-        // IFD2 = 2,
         SUBIFD = 0x2_0000,
-        // SUBIFD1 = 11,
-        // SUBIFD2 = 12,
-        EXTIFD = 0x3_000,
-        GPSIFD = 0x4_000,
+        IFDTHUMB = 0x3_000,
+        IFDGPS = 0x4_000,
         MakerNotes = 0xFFFF_0000
     }
 

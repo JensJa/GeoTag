@@ -1,3 +1,5 @@
+using ExifEdit;
+
 namespace ExifEditDemo
 {
     public partial class Form1 : Form
@@ -36,5 +38,29 @@ namespace ExifEditDemo
                 e.Effect = DragDropEffects.None;
         }
 
+        private void but_work_Click(object sender, EventArgs e)
+        {
+
+
+            ReadWriteFile exifReader = new ReadWriteFile();
+            exifReader.readFile(@"D:\TestBilder\Watvögel\IR5_2022-10-28-3046A.jpg");
+            lb_exifdata.Items.Add("---EXIF---");
+            foreach (var item in exifReader.ExifEntryList)
+            {
+
+                lb_exifdata.Items.Add($"{item.Value.ifdTyp}:{item.Key} - {item.Value.tagtyp.ToString()} = {item.Value.value} [{item.Value.typ} ]");
+
+            }
+            lb_exifdata.Items.Add("---IPTC---");
+            foreach (var item in exifReader.IptcList)
+            {
+                foreach (var field in item.Value)
+                {
+                    lb_exifdata.Items.Add($" {item.Key} - {field.size} - {field.Tag} = {field.DataString} ");
+                }
+
+            }
+        }
     }
 }
+
