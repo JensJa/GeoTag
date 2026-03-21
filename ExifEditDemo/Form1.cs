@@ -45,12 +45,21 @@ namespace ExifEditDemo
             ReadWriteFile exifReader = new ReadWriteFile();
             exifReader.readFile(@"D:\TestBilder\Watvögel\IR5_2022-10-28-3046A.jpg");
             lb_exifdata.Items.Add("---EXIF---");
-            foreach (var item in exifReader.ExifEntryList)
+           foreach (var item in exifReader.IfdListe)
             {
-
-                lb_exifdata.Items.Add($"{item.Value.ifdTyp}:{item.Key} - {item.Value.tagtyp.ToString()} = {item.Value.value} [{item.Value.typ} ]");
-
+                lb_exifdata.Items.Add($"IFD: {item.Key}");
+                foreach (var entry in item.Value.ExifList)
+                {
+                    lb_exifdata.Items.Add($"  {entry.Key} - {entry.Value.tagtyp.ToString()} = {entry.Value.value} [{entry.Value.typ}]");
+                }
             }
+
+            //foreach (var item in exifReader.ExifEntryList)
+            //{
+
+            //    lb_exifdata.Items.Add($"{item.Value.ifdTyp}:{item.Key} - {item.Value.tagtyp.ToString()} = {item.Value.value} [{item.Value.typ} ]");
+
+            //}
             lb_exifdata.Items.Add("---IPTC---");
             foreach (var item in exifReader.IptcList)
             {

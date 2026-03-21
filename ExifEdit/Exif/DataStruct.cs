@@ -4,7 +4,8 @@ using System;
 
 namespace ExifEdit.Exif
 { 
-   
+
+
 
     public struct ExifEntrie
     {

@@ -16,7 +16,9 @@ namespace ExifEdit.Images
     internal class JpgParser
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(SpecialTags));
-        public Dictionary<uint, ExifEntrie> ExifEntryList { get; set; }
+       // public Dictionary<uint, ExifEntrie> ExifEntryList { get; set; }
+
+        public Dictionary<ushort, IfdExifList> IfdListe { get;  set; }
         public Dictionary<IptcTag, List<IPTCField>> IptcList { get; set; }
 
         public IPTCSeg IptcSeg { get; set; } //ToDo private machen und über SaveTagsAndWrite2File übergeben, damit die Struktur auch bei nicht vorhandener IPTC Sektion angelegt wird
@@ -31,7 +33,7 @@ namespace ExifEdit.Images
         public void Parsefile(byte[] b)
         {
             
-            ExifEntryList = new Dictionary<uint, ExifEntrie>();
+            //ExifEntryList = new Dictionary<uint, ExifEntrie>();
             IptcList = new Dictionary<IptcTag, List<IPTCField>>();
 
             jpegSplitter = new JpegSplitter(b);
@@ -41,8 +43,8 @@ namespace ExifEdit.Images
             {
                 //            parseExif = new ParamterParser(filename);
                 ExifParser exifParser = new ExifParser();
-                ExifEntryList = exifParser.analyse(jpegSplitter.ListeJpegSegments[jpegSplitter.app1]);
-
+                exifParser.analyse(jpegSplitter.ListeJpegSegments[jpegSplitter.app1]);
+                IfdListe = exifParser.IfdListe;
             }
 
             if (jpegSplitter.app13 != 255)
@@ -54,7 +56,7 @@ namespace ExifEdit.Images
 
         }
 
-        public void SaveTagsAndWrite2File(String Filename, Dictionary<uint, ExifEntrie> exifEntryList, Dictionary<IptcTag, List<IPTCField>> iptcList)
+        public void SaveTagsAndWrite2File(String Filename, Dictionary<ushort, IfdExifList> IfdListe, Dictionary<IptcTag, List<IPTCField>> iptcList)
         {
             log.Debug("+saveTagsAndWrite2File");
             

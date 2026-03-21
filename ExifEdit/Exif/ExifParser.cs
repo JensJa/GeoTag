@@ -7,30 +7,30 @@ using System.Collections;
 
 namespace ExifEdit.Exif
 {
-   
+
 
     class ExifParser
     {
 
 
-      public Dictionary<NullReferenceException, byte[]> IfdListe { get; private set; } = new Dictionary<NullReferenceException, byte[]>(); // for saving the binary IFD Data
+        public Dictionary<ushort, IfdExifList> IfdListe { get; set; } = new Dictionary<ushort, IfdExifList>();
 
-        Dictionary<uint, ExifEntrie> exifList;
-        byte[] b;
-      
+        //  Dictionary<uint, ExifEntrie> exifList;
+        private byte[] b;
+
         int size;
 
         bool isIntel = true;
 
         List<Tuple<uint, IfdTyp>> additionalIfd = new List<Tuple<uint, IfdTyp>>();
 
-        public Dictionary<uint, ExifEntrie> analyse(byte[] b)
+        public void analyse(byte[] b)
         {
 
             this.b = b;
             this.size = b.Length;
 
-            exifList = new Dictionary<uint,ExifEntrie>();
+            //   exifList = new Dictionary<uint,ExifEntrie>();
 
             ushort dataFormat = Convert2.ToIntMot(b[10], b[11]);
             switch (dataFormat)
@@ -47,50 +47,50 @@ namespace ExifEdit.Exif
             }
 
             analyseData();
-            
-            return exifList;
+
+            //    return exifList;
 
         }
 
-         const int  offset = 10; //die ersten 10 Bytes gehören nicht zu den EXIF daten, sondern zu 
+        const int offset = 10; //die ersten 10 Bytes gehören nicht zu den EXIF daten, sondern zu 
 
-   
+
 
         private void analyseData()
         {
             // TreeNode treeNode;
-            uint ptr = 4+ offset;
+            uint ptr = 4 + offset;
             byte ifdNr = 0;
             uint ifdPos = Convert2.toInt(isIntel, b[ptr], b[ptr + 1], b[ptr + 2], b[ptr + 3]);
             //   treeNodeList.Add(NodeData.create("Pointer to IFD0", offset + ptr, 4, "IfdPtr", "" + ifdPos));
 
             while (ifdPos != 0)
-            { 
-                ifdPos = analyseIfd(ifdPos+ offset, ifdNr == 0? IfdTyp.IFD0: IfdTyp.IFDTHUMB,ifdNr);
+            {
+                ifdPos = analyseIfd(ifdPos + offset, ifdNr == 0 ? IfdTyp.IFD0 : IfdTyp.IFDTHUMB, ifdNr);
                 ifdNr++;
             }
             foreach (Tuple<uint, IfdTyp> elm in additionalIfd)
             {
-                    
-                ifdPos =  elm.Item1;
+
+                ifdPos = elm.Item1;
                 IfdTyp ifdtyp = elm.Item2;
                 while (ifdPos != 0)
                 {
-                    ifdPos = analyseIfd(ifdPos+ offset, ifdtyp, ifdNr++);
+                    ifdPos = analyseIfd(ifdPos + offset, ifdtyp, ifdNr++);
                 }
             }
             // return treeNodeList;
         }
 
-    
+
 
         private uint analyseIfd(uint ifdPos, IfdTyp ifdTyp, byte ifdNr)
         {
             uint ifdEntriesCount = Convert2.toInt(isIntel, b[ifdPos], b[ifdPos + 1]);
-         //   Console.WriteLine("ifdEntriesCount:" + ifdEntriesCount);
+            //   Console.WriteLine("ifdEntriesCount:" + ifdEntriesCount);
             for (uint i = 0; i < ifdEntriesCount; i++)
             {
-                analyseEntrie(ifdPos, i, ifdTyp,ifdNr);
+                analyseEntrie(ifdPos, i, ifdTyp, ifdNr);
             }
             uint nextIfd = Convert2.toInt(isIntel, b[ifdPos + 2 + 12 * ifdEntriesCount], b[ifdPos + 2 + 12 * ifdEntriesCount + 1]);
             return nextIfd;
@@ -111,9 +111,10 @@ namespace ExifEdit.Exif
             string dataValue = "";
 
             uint effDataSize = TagConvert.getDataSize(dataType) * dataSetCount;
-            if (effDataSize == 0) {
-               effDataSize = dataSetCount; //TopDo problematisch weil zu groß
-            } 
+            if (effDataSize == 0)
+            {
+                effDataSize = dataSetCount; //TopDo problematisch weil zu groß
+            }
             byte[] data = new byte[effDataSize];
 
 
@@ -123,23 +124,24 @@ namespace ExifEdit.Exif
             {
                 uint ptr2data = Convert2.toInt(isIntel, b[pos + 8], b[pos + 9], b[pos + 10], b[pos + 11]);
                 //manchmal scheien dei werte nicht zu stimmen
-                if (b.Length < ptr2data + offset + effDataSize) { 
+                if (b.Length < ptr2data + offset + effDataSize)
+                {
                     effDataSize = (uint)(b.Length - (ptr2data + offset)); //TODO check this size -1? ??
                 }
 
                 // Console.WriteLine (effDataSize +"  "+ b.Length);
-                   Array.Copy(b, ptr2data+offset, data, 0, effDataSize);  
-                dataValue = TagConvert.getValue(isIntel, tagType, dataType, data, dataSetCount,ifdTyp);
-             }
-           else
-           {
+                Array.Copy(b, ptr2data + offset, data, 0, effDataSize);
+                dataValue = TagConvert.getValue(isIntel, tagType, dataType, data, dataSetCount, ifdTyp);
+            }
+            else
+            {
                 Array.Copy(b, pos + 8, data, 0, effDataSize);
-                dataValue = TagConvert.getValue(isIntel, tagType, dataType, data, dataSetCount,ifdTyp);
+                dataValue = TagConvert.getValue(isIntel, tagType, dataType, data, dataSetCount, ifdTyp);
                 //    nodeArray[3] = NodeData.create("Data", offset + pos + 8, effDataSize, "Data", dataValue);
                 //    // nodeArray[3] = NodeData.create("Data", offset + pos + 8, 4, "Data", "");
             }
 
-            if ( tagType == TagType.TAG_GPSInfo)
+            if (tagType == TagType.TAG_GPSInfo)
             {
                 additionalIfd.Add(new Tuple<uint, IfdTyp>(Convert2.toInt(isIntel, b[pos + 8], b[pos + 9], b[pos + 10], b[pos + 11]), IfdTyp.IFDGPS));
             }
@@ -149,7 +151,7 @@ namespace ExifEdit.Exif
             }
             else
             {
-                //dataValue =getSpecialValue(tagId,)
+                //  dataValue =getSpecialValue(tagId,)
                 ExifEntrie exifentry = new ExifEntrie();
                 exifentry.ifdTyp = ifdTyp;
                 exifentry.id = tagId;
@@ -158,16 +160,29 @@ namespace ExifEdit.Exif
                 exifentry.typ = dataType;
                 exifentry.dataCount = dataSetCount;
                 exifentry.obj = data;
-                if (!exifList.ContainsKey(tagId))
-                { exifList.Add(tagId, exifentry); }
-                else
-                { // einige Tagid´s sind doppelt!
-                    if (!exifList.ContainsKey(((uint)tagType) + tagId))
-                    { exifList.Add(((uint)tagType) + tagId, exifentry); }
-                }
-            }
 
+                if (!IfdListe.ContainsKey(ifdNr))
+                { IfdListe.Add(ifdNr, new IfdExifList(ifdNr, ifdTyp)); }
+
+                IfdListe[ifdNr].ExifList.Add(tagId, exifentry);
+                //    }
+                //    else
+                //    {
+                //        IfdExifList ifdExifList = new IfdExifList();
+                //        ifdExifList.addEntry(exifentry);
+                //        IfdListe.Add(ifdNr, ifdExifList);
+                //    }
+
+                //    if (!exifList.ContainsKey(tagId))
+                //    { exifList.Add(tagId, exifentry); }
+                //    else
+                //    { // einige Tagid´s sind doppelt!
+                //        if (!exifList.ContainsKey(((uint)tagType) + tagId))
+                //        { exifList.Add(((uint)tagType) + tagId, exifentry); }
+                //    }
+                //}
+
+            }
         }
-        }
-    
+    }
     }
